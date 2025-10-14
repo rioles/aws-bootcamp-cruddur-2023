@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    environment:
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      POSTGRES_DB: ${PG_DATABASE}
+    ports:
+      - "5433:5432"  # map port 5432 du conteneur sur 5433 de l'hôte
+    volumes:
+      - ./volumes/postgres_data:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - ${GLOBAL_NETWORK}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${PG_USER} -d ${PG_DATABASE} -h localhost || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  pgadmin:
+    image: dpage/pgadmin4:7
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    ports:
+      - "8080:80"  # accéder à pgAdmin via http://localhost:8080
+    volumes:
+      - ./volumes/pgadmin_data:/var/lib/pgadmin
+    restart: always
+    depends_on:
+      - postgres
+    networks:
+      - ${GLOBAL_NETWORK}
+
+networks:
+  ${GLOBAL_NETWORK}:
+    driver: bridge

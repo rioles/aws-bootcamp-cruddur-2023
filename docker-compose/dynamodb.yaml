@@ -1,0 +1,32 @@
+services:
+  dynamodb-local:
+    image: amazon/dynamodb-local:latest
+    container_name: dynamodb-local
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
+    working_dir: /home/dynamodblocal
+    ports:
+      - "8000:8000"
+    volumes:
+      - "./data/dynamodb:/home/dynamodblocal/data"
+    restart: always
+    networks:
+      - ${GLOBAL_NETWORK}
+
+  dynamodb-admin:
+    image: aaronshaf/dynamodb-admin
+    container_name: dynamodb-admin
+    depends_on:
+      - dynamodb-local
+    restart: always
+    ports:
+      - "8001:8001"
+    environment:
+      - DYNAMO_ENDPOINT=http://dynamodb-local:8000
+      - AWS_REGION=ap-southeast-1
+    networks:
+      - ${GLOBAL_NETWORK}
+
+networks:
+  ${GLOBAL_NETWORK}:
+    driver: bridge
+
