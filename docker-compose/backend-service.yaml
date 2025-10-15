@@ -1,0 +1,31 @@
+version: "3.8"
+services:
+  backend-flask:
+    image: 19911992/backend-flask-2
+    volumes:
+      - ../backend-flask:/backend-flask
+    environment:
+      FRONTEND_URL: "${FRONTEND_URL}"
+      BACKEND_URL: "${BACKEND_URL}"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "https://api.honeycomb.io"
+      OTEL_EXPORTER_OTLP_HEADERS: "x-honeycomb-team=${HONEYCOMB_API_KEY}"
+      OTEL_SERVICE_NAME: "${HONEYCOMB_SERVICE_NAME}"
+    ports:
+      - "4567:4567"
+    networks:
+      - ${GLOBAL_NETWORK}
+
+  frontend-react-js:
+    image: 19911992/frontend-react2
+    volumes:
+      - ../frontend-react-js:/frontend-react-js
+    environment:
+      BACKEND_URL: "${BACKEND_URL}"
+    ports:
+      - "3000:3000"
+    networks:
+      - ${GLOBAL_NETWORK}
+
+networks:
+  aws-bootcamp:
+    driver: bridge
