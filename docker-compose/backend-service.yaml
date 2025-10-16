@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   backend-flask:
-    image: 19911992/backend-flask-2
+    image: 19911992/backendflask_4
     volumes:
       - ../backend-flask:/backend-flask
     environment:
@@ -20,7 +20,7 @@ services:
     volumes:
       - ../frontend-react-js:/frontend-react-js
     environment:
-      BACKEND_URL: "${BACKEND_URL}"
+      BACKEND_URL: "${BACKEND_FRONT}"
     ports:
       - "3000:3000"
     networks:
