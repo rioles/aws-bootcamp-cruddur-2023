@@ -1,7 +1,13 @@
 from datetime import datetime, timedelta, timezone
+from aws_xray_sdk.core import xray_recorder
 class ShowActivities:
   def run(activity_uuid):
+    segment = xray_recorder.begin_segment('user activity')
+    
     now = datetime.now(timezone.utc).astimezone()
+    dict = {"now": now.isoformat()}
+    segment.put_metadata('key', dict, 'namespace')
+    subsegment = xray_recorder.begin_subsegment('mock_data')
     results = [{
       'uuid': '68f126b0-1ceb-4a33-88be-d90fa7109eee',
       'handle':  'Andrew Brown',
