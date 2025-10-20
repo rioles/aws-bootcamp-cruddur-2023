@@ -1,7 +1,8 @@
 version: "3.8"
+
 services:
   backend-flask:
-    image: 19911992/backendflask_4
+    image: 19911992/backendflask4
     volumes:
       - ../backend-flask:/backend-flask
     environment:
@@ -12,11 +13,14 @@ services:
       OTEL_SERVICE_NAME: "${HONEYCOMB_SERVICE_NAME}"
       AWS_XRAY_URL: "*4567-${CODESPACE_NAME}.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}*"
       AWS_XRAY_DAEMON_ADDRESS: "xray-daemon:2000"
+      AWS_DEFAULT_REGION: "${AWS_DEFAULT_REGION}"
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
     ports:
       - "4567:4567"
     networks:
-      - ${GLOBAL_NETWORK}
-
+      - aws-bootcamp
+   
   frontend-react-js:
     image: 19911992/frontend-react2
     volumes:
@@ -26,7 +30,20 @@ services:
     ports:
       - "3000:3000"
     networks:
-      - ${GLOBAL_NETWORK}
+      - aws-bootcamp
+   
+  xray-daemon:
+    image: "amazon/aws-xray-daemon"
+    environment:
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+      AWS_REGION: "us-east-1"
+    command:
+      - "xray -o -b xray-daemon:2000"
+    ports:
+      - 2000:2000/udp
+    networks:
+      - aws-bootcamp
 
 networks:
   aws-bootcamp:
