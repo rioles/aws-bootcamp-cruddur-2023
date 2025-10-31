@@ -21,13 +21,13 @@ services:
       - aws-bootcamp
    
   frontend-react-js:
-    image: 19911992/frontend-react2
+    image: 19911992/frontend_with_cognito_v9.0
     volumes:
       - ../frontend-react-js:/frontend-react-js
     environment:
       BACKEND_URL: "${BACKEND_FRONT}"
-      REACT_AWS_PROJECT_REGION: "${AWS_DEFAULT_REGION}" 
-      REACT_APP_AWS_COGNITO_REGION: "${AWS_DEFAULT_REGION}"
+      REACT_APP_AWS_PROJECT_REGION: "${REACT_APP_AWS_PROJECT_REGION}"
+      REACT_APP_AWS_COGNITO_REGION: "${REACT_APP_AWS_COGNITO_REGION}"
       REACT_APP_AWS_USER_POOLS_ID: "${REACT_APP_AWS_USER_POOLS_ID}"
       REACT_APP_CLIENT_ID: "${REACT_APP_CLIENT_ID}"
     ports:
@@ -38,3 +38,6 @@ services:
 networks:
   aws-bootcamp:
     driver: bridge
+
+
+
